@@ -2,8 +2,11 @@ import { Button } from "../../components/ui/button";
 import { Link2, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
+import { useAuth } from "~/stores/useAuth";
+import Profile from "./Profile";
 
 export const Navigation = () => {
+  const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   return (
@@ -37,11 +40,15 @@ export const Navigation = () => {
             >
               Geo-Redirect
             </a>
-            <Link to="/auth/signin">
-              <Button variant="gradient" size="sm" className="cursor-pointer">
-                Sign In
-              </Button>
-            </Link>
+            {user?.id ? (
+              <Profile isMobile={false} />
+            ) : (
+              <Link to="/auth/signin">
+                <Button variant="gradient" size="sm" className="cursor-pointer">
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* mobile */}
@@ -81,15 +88,19 @@ export const Navigation = () => {
                 Geo-Redirect
               </a>
               <div className="pt-2">
-                <Link to="/auth/signin">
-                  <Button
-                    variant="gradient"
-                    size="sm"
-                    className="w-full cursor-pointer"
-                  >
-                    Sign In
-                  </Button>
-                </Link>
+                {user?.id ? (
+                  <Profile isMobile={true} />
+                ) : (
+                  <Link to="/auth/signin">
+                    <Button
+                      variant="gradient"
+                      size="sm"
+                      className="cursor-pointer"
+                    >
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

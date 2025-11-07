@@ -13,7 +13,8 @@ interface AuthState {
   token: string | null;
   signIn: (email: string, password: string) => Promise<boolean>;
   signUp: (name: string, email: string, password: string) => Promise<boolean>;
-  verifyToken: (token: string) => Promise<void>;
+  verifyToken: (token: string) => Promise<boolean>;
+  updateUser: (updates: Partial<User>) => void;
   logOut: () => void;
   isLoading: boolean;
   error: string | null;
@@ -26,6 +27,7 @@ export const useAuth = create<AuthState>()(
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null,
     isLoading: false,
     error: null,
+
     signIn: async (email: string, password: string): Promise<boolean> => {
       set({ isLoading: true, error: null });
       try {
@@ -125,12 +127,79 @@ export const useAuth = create<AuthState>()(
       }
     },
 
-    verifyToken: async (token: string) => {
+    verifyToken: async (token: string): Promise<boolean> => {
       set({ isLoading: true, error: null });
-      // verify token
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/user/verify-token`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json();
+        if (response.ok && data.success) {
+          const rawUser = data.data;
+
+          const user: User = {
+            id: rawUser._id,
+            email: rawUser.email,
+            name: rawUser.name,
+            avatar: rawUser.avatar || "",
+            createdAt: rawUser.createdAt,
+            updatedAt: rawUser.updatedAt,
+          };
+
+          set({
+            user,
+            token,
+            isLoading: false,
+            error: null,
+          });
+
+          return true;
+        } else if (
+          (response.status === 401 &&
+            data.message === "Invalid token (user not found)") ||
+          "Expired token" ||
+          "Invalid token signature"
+        ) {
+          set({
+            user: null,
+            token: null,
+            isLoading: false,
+            error: "Session expired. Please sign in again.",
+          });
+          localStorage.removeItem("authToken");
+          toast.error("Session expired. Please sign in again.");
+          return false;
+        } else {
+          throw new Error(data.message || "Token verification failed");
+        }
+      } catch (err: Error | any) {
+        console.error("Token verification error:", err);
+        set({
+          user: null,
+          token: null,
+          isLoading: false,
+          error: err.message,
+        });
+        localStorage.removeItem("authToken");
+        toast.error("Authentication failed. Please sign in again.");
+        return false;
+      }
     },
+
+    updateUser: (updates: Partial<User>) => {
+      set((state) => ({
+        user: state.user ? { ...state.user, ...updates } : null,
+      }));
+    },
+
     logOut: () => {
-      set({ user: null, token: null });
+      set({ user: null, token: null, isLoading: false, error: null });
       localStorage.removeItem("authToken");
       toast.success("Logged out successfully");
     },
