@@ -11,13 +11,36 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Link2, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { validateEmail, validatePassword } from "~/lib/utils";
+import { useAuth } from "~/stores/useAuth";
+import { toast } from "sonner";
 
 const Auth = () => {
+  const { signIn } = useAuth();
+  const navigate = useNavigate();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!validateEmail(formData.email)) {
+      toast.warning("Invalid email address");
+      return;
+    }
+    const passwordError = validatePassword(formData.password);
+    if (passwordError !== null) {
+      toast.warning(passwordError);
+      return;
+    }
+
+    const success = await signIn(formData.email, formData.password);
+    if (success) {
+      navigate("/");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-bg flex items-center justify-center p-4">
@@ -45,7 +68,10 @@ const Auth = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-8 flex flex-col ">
+            <form
+              className="space-y-8 flex flex-col "
+              onSubmit={(e) => handleSubmit(e)}
+            >
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-foreground">
                   Email

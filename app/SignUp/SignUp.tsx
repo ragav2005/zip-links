@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -11,14 +11,53 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Link2, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { useAuth } from "~/stores/useAuth";
+import { toast } from "sonner";
+import { validateEmail, validatePassword } from "~/lib/utils";
 
 const SignUp = () => {
+  const { signUp, isLoading } = useAuth();
+  const navigate = useNavigate();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     password: "",
   });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (formData.fullName.trim() === "") {
+      toast.warning("Full name cannot be empty");
+      return;
+    } else if (formData.fullName.length < 2) {
+      toast.warning("Full name must be at least 2 characters long");
+      return;
+    } else if (formData.fullName.length > 50) {
+      toast.warning("Full name cannot exceed 50 characters");
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      toast.warning("Invalid email address");
+      return;
+    }
+    const passwordError = validatePassword(formData.password);
+    if (passwordError !== null) {
+      toast.warning(passwordError);
+      return;
+    }
+
+    const success = await signUp(
+      formData.fullName,
+      formData.email,
+      formData.password
+    );
+    if (success) {
+      navigate("/");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-bg flex items-center justify-center p-4">
@@ -46,7 +85,7 @@ const SignUp = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-8">
+            <form className="space-y-8" onSubmit={(e) => handleSubmit(e)}>
               <div className="space-y-2">
                 <Label htmlFor="fullName" className="text-foreground">
                   Full Name
@@ -114,8 +153,9 @@ const SignUp = () => {
                   type="submit"
                   variant="gradient"
                   className="w-1/2 cursor-pointer mx-auto"
+                  disabled={isLoading}
                 >
-                  Sign Up
+                  {isLoading ? "Signing up..." : "Sign Up"}
                 </Button>
                 <Link
                   to="/auth/signin"

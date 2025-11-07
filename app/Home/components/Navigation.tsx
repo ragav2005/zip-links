@@ -37,13 +37,11 @@ export const Navigation = () => {
             >
               Geo-Redirect
             </a>
-            <a href="/auth">
-              <Link to="/auth/signin">
-                <Button variant="gradient" size="sm" className="cursor-pointer">
-                  Sign In
-                </Button>
-              </Link>
-            </a>
+            <Link to="/auth/signin">
+              <Button variant="gradient" size="sm" className="cursor-pointer">
+                Sign In
+              </Button>
+            </Link>
           </div>
 
           {/* mobile */}

@@ -3,7 +3,7 @@ import type { Route } from "../+types/home";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Sign Up" },
+    { title: "Sign Up | ZipLinks" },
     { name: "description", content: "Create a new account" },
   ];
 }

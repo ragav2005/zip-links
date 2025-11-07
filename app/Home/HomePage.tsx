@@ -3,8 +3,12 @@ import { Hero } from "./components/Hero";
 import { Navigation } from "./components/Navigation";
 import { HowItWorks } from "./components/HowItWorks";
 import { GetStarted } from "./components/GetStarted";
+import { useAuth } from "~/stores/useAuth";
 
 const HomePage = () => {
+  const { user } = useAuth();
+  console.log(user);
+
   return (
     <div className="min-h-screen bg-gradient-bg text-black">
       <Navigation />
