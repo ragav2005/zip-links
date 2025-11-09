@@ -1,4 +1,4 @@
-import { Button } from "../../components/ui/button";
+import { Button } from "../../../components/ui/button";
 import { Link2, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
@@ -13,12 +13,16 @@ export const Navigation = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-white/10">
       <div className="container mx-auto px-4 pt-2">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-4">
-            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-              <Link2 className="h-5 w-5 text-white" />
+          <Link to="/">
+            <div className="flex items-center gap-4">
+              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
+                <Link2 className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-xl font-bold text-foreground">
+                ZipLinks
+              </span>
             </div>
-            <span className="text-xl font-bold text-foreground">ZipLinks</span>
-          </div>
+          </Link>
 
           {/* desktop */}
           <div className="hidden md:flex items-center gap-8">

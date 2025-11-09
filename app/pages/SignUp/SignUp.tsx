@@ -1,30 +1,43 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
+} from "~/components/ui/card";
 import { Link2, ArrowLeft, Eye, EyeOff } from "lucide-react";
-import { validateEmail, validatePassword } from "~/lib/utils";
 import { useAuth } from "~/stores/useAuth";
 import { toast } from "sonner";
+import { validateEmail, validatePassword } from "~/lib/utils";
 
-const Auth = () => {
-  const { signIn } = useAuth();
+const SignUp = () => {
+  const { signUp, isLoading } = useAuth();
   const navigate = useNavigate();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [formData, setFormData] = useState({
+    fullName: "",
     email: "",
     password: "",
   });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (formData.fullName.trim() === "") {
+      toast.warning("Full name cannot be empty");
+      return;
+    } else if (formData.fullName.length < 2) {
+      toast.warning("Full name must be at least 2 characters long");
+      return;
+    } else if (formData.fullName.length > 50) {
+      toast.warning("Full name cannot exceed 50 characters");
+      return;
+    }
 
     if (!validateEmail(formData.email)) {
       toast.warning("Invalid email address");
@@ -36,7 +49,11 @@ const Auth = () => {
       return;
     }
 
-    const success = await signIn(formData.email, formData.password);
+    const success = await signUp(
+      formData.fullName,
+      formData.email,
+      formData.password
+    );
     if (success) {
       navigate("/");
     }
@@ -61,17 +78,31 @@ const Auth = () => {
               </div>
             </div>
             <CardTitle className="text-2xl font-bold text-foreground">
-              Welcome back
+              Create account
             </CardTitle>
             <CardDescription className="text-muted-foreground">
-              Sign in to access your shortened URLs
+              Sign up to start shortening URLs
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form
-              className="space-y-8 flex flex-col "
-              onSubmit={(e) => handleSubmit(e)}
-            >
+            <form className="space-y-8" onSubmit={(e) => handleSubmit(e)}>
+              <div className="space-y-2">
+                <Label htmlFor="fullName" className="text-foreground">
+                  Full Name
+                </Label>
+                <Input
+                  id="fullName"
+                  type="text"
+                  placeholder="John Doe"
+                  value={formData.fullName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, fullName: e.target.value })
+                  }
+                  className="bg-white/10 border-white/20 text-foreground placeholder:text-muted-foreground"
+                  required
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-foreground">
                   Email
@@ -89,7 +120,7 @@ const Auth = () => {
                 />
               </div>
 
-              <div className="relative space-y-2">
+              <div className="space-y-2 relative">
                 <Label htmlFor="password" className="text-foreground">
                   Password
                 </Label>
@@ -122,14 +153,15 @@ const Auth = () => {
                   type="submit"
                   variant="gradient"
                   className="w-1/2 cursor-pointer mx-auto"
+                  disabled={isLoading}
                 >
-                  Sign In
+                  {isLoading ? "Signing up..." : "Sign Up"}
                 </Button>
                 <Link
-                  to="/auth/signup"
+                  to="/auth/signin"
                   className="text-primary hover:text-primary-glow transition-colors"
                 >
-                  Don't have an account? Sign up
+                  Already have an account? Sign in
                 </Link>
               </div>
             </form>
@@ -140,4 +172,4 @@ const Auth = () => {
   );
 };
 
-export default Auth;
+export default SignUp;

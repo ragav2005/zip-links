@@ -2,11 +2,7 @@ import { create } from "zustand";
 import type User from "~/types/user";
 import { toast } from "sonner";
 import { devtools } from "zustand/middleware";
-const API_BASE_URL = import.meta.env.VITE_NODE_URI;
-if (!API_BASE_URL) {
-  toast("VITE_NODE_URI is not defined");
-  throw new Error("VITE_NODE_URI is not defined");
-}
+import { getSiteConfig } from "~/lib/utils";
 
 interface AuthState {
   user: User | null;
@@ -19,6 +15,7 @@ interface AuthState {
   isLoading: boolean;
   error: string | null;
 }
+const { API_BASE_URL } = getSiteConfig();
 
 export const useAuth = create<AuthState>()(
   devtools((set) => ({

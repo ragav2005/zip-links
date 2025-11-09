@@ -1,4 +1,4 @@
-import { Button } from "../../components/ui/button";
+import { Button } from "../../../components/ui/button";
 import { Link2, BarChart3, Shield, Zap, Globe } from "lucide-react";
 
 export const Hero = () => {
