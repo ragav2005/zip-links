@@ -78,7 +78,14 @@ const UrlCard = ({ item, setShortenedUrls }: Props) => {
                 variant="glass"
                 size="sm"
                 className="bg-black/60 cursor-pointer border-white/20 hover:bg-black/10"
-                onClick={() => window.open(item.defaultUrl, "_blank")}
+                onClick={() => {
+                  const url =
+                    item.defaultUrl.startsWith("http://") ||
+                    item.defaultUrl.startsWith("https://")
+                      ? item.defaultUrl
+                      : `https://${item.defaultUrl}`;
+                  window.open(url, "_blank");
+                }}
               >
                 <ExternalLink className="h-4 w-4" />
               </Button>

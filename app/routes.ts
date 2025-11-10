@@ -5,4 +5,5 @@ export default [
   route("auth/signin", "routes/auth/signin.tsx"),
   route("auth/signup", "routes/auth/signup.tsx"),
   route("shorten", "routes/shorten.tsx"),
+  route("geo-redirect", "routes/GeoRedirect.tsx"),
 ] satisfies RouteConfig;
