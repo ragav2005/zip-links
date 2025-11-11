@@ -14,11 +14,7 @@ import {
 import { DropdownMenuItem } from "~/components/ui/dropdown-menu";
 import { useAuth } from "~/stores/useAuth";
 
-interface LogoutAlertDialogProps {
-  isMobile?: boolean;
-}
-
-const LogoutAlertDialog = ({ isMobile }: LogoutAlertDialogProps) => {
+const LogoutAlertDialog = () => {
   const { logOut } = useAuth();
 
   const handleLogout = () => {

@@ -7,6 +7,8 @@ import type ShortenedUrl from "~/types/ShortenedUrl";
 import CountryRuleCard from "./CountryRuleCard";
 import { getSiteConfig } from "~/lib/utils";
 import { useAuth } from "~/stores/useAuth";
+import NewCountryRuleDialog from "./NewCountryRuleDialog";
+import DeleteDialog from "./DeleteDialog";
 
 interface Props {
   rule: ShortenedUrl;
@@ -16,12 +18,15 @@ interface Props {
 const GeoRuleCard = ({ rule, setGeoRules }: Props) => {
   const { token } = useAuth();
   const { API_BASE_URL } = getSiteConfig();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const copyToClipboard = (shortCode: string) => {
     navigator.clipboard.writeText(`https://zip.ly/${shortCode}`);
     toast.success("Geo-redirect link copied to clipboard");
   };
   const handleDelete = async (id: string) => {
+    setIsDeleting(true);
     try {
       const response = await fetch(`${API_BASE_URL}/api/url/delete/${id}`, {
         method: "GET",
@@ -36,12 +41,15 @@ const GeoRuleCard = ({ rule, setGeoRules }: Props) => {
           prev.filter((item) => item._id !== id)
         );
         toast.success("URL deleted successfully");
+        setOpen(false);
       } else {
         throw new Error(data.message || "Error deleting url");
       }
     } catch (err: Error | any) {
       console.log("Error deleting url : ", err);
       toast.error(err.message || "Error deleting url");
+    } finally {
+      setIsDeleting(false);
     }
   };
   return (
@@ -84,13 +92,13 @@ const GeoRuleCard = ({ rule, setGeoRules }: Props) => {
               >
                 <Copy className="h-4 w-4" />
               </Button>
-              <Button
-                variant="ghost"
-                className="h-8 w-8 px-3 text-red-400 bg-destructive/30 hover:text-red-500 cursor-pointer hover:bg-destructive/20 border border-destructive/20 "
-                onClick={() => handleDelete(rule._id)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              <DeleteDialog
+                id={rule._id}
+                handleDelete={handleDelete}
+                open={open}
+                setOpen={setOpen}
+                isDeleting={isDeleting}
+              />
             </div>
           </div>
 
@@ -101,19 +109,18 @@ const GeoRuleCard = ({ rule, setGeoRules }: Props) => {
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {rule.geoRules.map((geoRule, index) => (
-                  <CountryRuleCard key={index} geoRule={geoRule} />
+                  <CountryRuleCard
+                    key={index}
+                    geoRule={geoRule}
+                    id={rule._id}
+                    setGeoRules={setGeoRules}
+                  />
                 ))}
               </div>
 
-              <Button
-                variant="glass"
-                size="sm"
-                className="border-white/20 cursor-pointer mt-2"
-                onClick={() => {}}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Country Rule
-              </Button>
+              <NewCountryRuleDialog id={rule._id} setGeoRules={setGeoRules}>
+                <span>Add Country Rule</span>
+              </NewCountryRuleDialog>
             </div>
           )}
 
@@ -123,15 +130,9 @@ const GeoRuleCard = ({ rule, setGeoRules }: Props) => {
                 <Globe className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
                 No geographic rules configured
               </p>
-              <Button
-                variant="glass"
-                size="sm"
-                className="border-white/20 cursor-pointer"
-                onClick={() => {}}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add First Rule
-              </Button>
+              <NewCountryRuleDialog id={rule._id} setGeoRules={setGeoRules}>
+                <span>Add First Rule</span>
+              </NewCountryRuleDialog>
             </div>
           )}
         </div>

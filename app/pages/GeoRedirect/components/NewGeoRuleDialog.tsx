@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -102,9 +103,9 @@ const NewGeoRuleDialog = ({ setGeoRules }: Props) => {
             </div>
             Create Geo-Redirect Rule
           </DialogTitle>
-          <p className="text-muted-foreground text-sm">
+          <DialogDescription className="text-muted-foreground text-sm">
             Set up intelligent redirects based on user location
-          </p>
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -191,8 +192,9 @@ const NewGeoRuleDialog = ({ setGeoRules }: Props) => {
               onClick={handleCreateRule}
               variant="gradient"
               className="px-6 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
+              disabled={isCreating}
             >
-              Create Geo-Rule
+              {isCreating ? "Creating..." : "Create Geo-Rule"}
             </Button>
           </div>
         </div>

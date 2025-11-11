@@ -12,6 +12,7 @@ export default interface ShortenedUrl {
 }
 
 export interface geoRule {
+  _id: string;
   country: string;
   countryCode: string;
   clicks: number;

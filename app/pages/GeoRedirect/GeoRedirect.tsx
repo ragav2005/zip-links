@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 const GeoRedirect = () => {
   const { token } = useAuth();
-  const { API_BASE_URL, SITE_URL } = getSiteConfig();
+  const { API_BASE_URL } = getSiteConfig();
 
   const [geoRules, setGeoRules] = useState<ShortenedUrl[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -84,7 +84,7 @@ const GeoRedirect = () => {
                   </div>
                   <h3 className="text-2xl font-bold text-foreground">12</h3>
                   <p className="text-sm text-muted-foreground">
-                    Countries Targeted
+                    Countries Targeted {/* todo */}
                   </p>
                 </CardContent>
               </Card>
@@ -96,7 +96,7 @@ const GeoRedirect = () => {
                   </div>
                   <h3 className="text-2xl font-bold text-foreground">8.9K</h3>
                   <p className="text-sm text-muted-foreground">
-                    Total Geo-Clicks
+                    Total Geo-Clicks {/* todo */}
                   </p>
                 </CardContent>
               </Card>
@@ -106,10 +106,10 @@ const GeoRedirect = () => {
             <div className="space-y-6">
               <div className="mx-auto w-[90%] flex items-center justify-between">
                 <div>
-                  <h2 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                  <h2 className="text-lg md:text-xl lg:text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                     Geo-Redirect Rules
                   </h2>
-                  <p className="text-muted-foreground mt-2">
+                  <p className="text-muted-foreground mt-2 text-md md:text-lg lg:text-xl">
                     Manage your location-based Redirects
                   </p>
                 </div>
