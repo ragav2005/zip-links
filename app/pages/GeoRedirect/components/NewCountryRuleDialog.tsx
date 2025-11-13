@@ -21,11 +21,17 @@ interface Props {
   id: string;
   children: React.ReactNode;
   setGeoRules: React.Dispatch<React.SetStateAction<ShortenedUrl[]>>;
+  setRefreshFlag: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const countryList = getData();
 
-const NewCountryRuleDialog = ({ children, id, setGeoRules }: Props) => {
+const NewCountryRuleDialog = ({
+  children,
+  id,
+  setGeoRules,
+  setRefreshFlag,
+}: Props) => {
   const { API_BASE_URL } = getSiteConfig();
   const { token } = useAuth();
   const [open, setOpen] = useState(false);
@@ -78,6 +84,7 @@ const NewCountryRuleDialog = ({ children, id, setGeoRules }: Props) => {
             rule._id === id ? { ...rule, geoRules: data.data } : rule
           )
         );
+        setRefreshFlag((prev) => prev + 1);
         setOpen(false);
       } else {
         throw new Error(data.message || "Error creating country rule");

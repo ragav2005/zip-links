@@ -17,9 +17,10 @@ import { useAuth } from "~/stores/useAuth";
 
 interface Props {
   setGeoRules: React.Dispatch<React.SetStateAction<ShortenedUrl[]>>;
+  setRefreshFlag: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const NewGeoRuleDialog = ({ setGeoRules }: Props) => {
+const NewGeoRuleDialog = ({ setGeoRules, setRefreshFlag }: Props) => {
   const { token } = useAuth();
   const { API_BASE_URL, SITE_URL } = getSiteConfig();
   const normalizedSiteUrl = normalizeUrl(SITE_URL);
@@ -71,6 +72,7 @@ const NewGeoRuleDialog = ({ setGeoRules }: Props) => {
           defaultUrl: "",
         });
         setOpen(false);
+        setRefreshFlag((prev) => prev + 1);
         toast.success("Geo-Redirect Rule created successfully");
       } else {
         throw new Error(data.message || "Error creating Geo-Redirect Rule");

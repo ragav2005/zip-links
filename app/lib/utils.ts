@@ -106,3 +106,42 @@ export const isValidUrl = (string: string) => {
     return false;
   }
 };
+
+const deviceColorMap: { [key: string]: string } = {
+  desktop: "#8b5cf6",
+  mobile: "#06b6d4",
+  tablet: "#10b981",
+  other: "#f59e0b",
+};
+
+export const getDeviceColor = (deviceName: string): string => {
+  return deviceColorMap[deviceName.toLowerCase()] || "#6b7280";
+};
+
+export const sortDeviceBreakdown = (
+  devices: Array<{ name: string; value: number }>
+) => {
+  if (!devices || devices.length === 0) return devices;
+
+  const others = devices.filter((d) => d.name.toLowerCase() === "others");
+  const nonOthers = devices.filter((d) => d.name.toLowerCase() !== "others");
+
+  return [...nonOthers, ...others];
+};
+
+export const sortGeoDistribution = (
+  countries: Array<{
+    country: string;
+    clicks: number;
+    percentage: number | string;
+  }>
+) => {
+  if (!countries || countries.length === 0) return countries;
+
+  const others = countries.filter((c) => c.country.toLowerCase() === "others");
+  const nonOthers = countries
+    .filter((c) => c.country.toLowerCase() !== "others")
+    .sort((a, b) => b.clicks - a.clicks);
+
+  return [...nonOthers, ...others];
+};

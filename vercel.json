@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://<your-azure-backend-domain>/api/:path*"
+    },
+    {
+      "source": "/((?!api|shorten|geo-redirect|dashboard|login|register|src|assets|@vite|vite|auth|node_modules|app|@id|favicon.ico|__).+)",
+      "destination": "https://<your-azure-backend-domain>/$1"
+    }
+  ]
+}

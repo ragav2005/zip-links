@@ -1,6 +1,6 @@
-import type { Route } from "../+types/root";
-import GeoRedirectPage from "~/pages/GeoRedirect/GeoRedirect";
+import Dashboard from "~/pages/Dashboard/Dashboard";
 import ProtectedRoute from "~/components/ProtectedRoute";
+import type { Route } from "../+types/root";
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "ZipLinks" },
@@ -11,7 +11,7 @@ export function meta({}: Route.MetaArgs) {
 const GeoRedirect = () => {
   return (
     <ProtectedRoute>
-      <GeoRedirectPage />
+      <Dashboard />
     </ProtectedRoute>
   );
 };

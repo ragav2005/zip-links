@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAuth } from "~/stores/useAuth";
 
 interface AuthMiddlewareProps {
@@ -6,13 +6,17 @@ interface AuthMiddlewareProps {
 }
 
 const AuthMiddleware = ({ children }: AuthMiddlewareProps) => {
-  const { token, user, verifyToken, isLoading } = useAuth();
+  const { token, user, verifyToken } = useAuth();
+  const verifyStartedRef = useRef(false);
 
   useEffect(() => {
-    if (token && !user && !isLoading) {
-      verifyToken(token);
+    if (token && !user && !verifyStartedRef.current) {
+      verifyStartedRef.current = true;
+      verifyToken(token).finally(() => {
+        verifyStartedRef.current = false;
+      });
     }
-  }, [token, user, verifyToken, isLoading]);
+  }, [token, user]);
 
   return <>{children}</>;
 };

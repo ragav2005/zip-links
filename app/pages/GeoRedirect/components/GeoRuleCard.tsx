@@ -5,7 +5,7 @@ import { Globe, Plus, Trash2, ExternalLink, Copy } from "lucide-react";
 import { toast } from "sonner";
 import type ShortenedUrl from "~/types/ShortenedUrl";
 import CountryRuleCard from "./CountryRuleCard";
-import { getSiteConfig } from "~/lib/utils";
+import { getSiteConfig, normalizeUrl } from "~/lib/utils";
 import { useAuth } from "~/stores/useAuth";
 import NewCountryRuleDialog from "./NewCountryRuleDialog";
 import DeleteDialog from "./DeleteDialog";
@@ -13,16 +13,19 @@ import DeleteDialog from "./DeleteDialog";
 interface Props {
   rule: ShortenedUrl;
   setGeoRules: React.Dispatch<React.SetStateAction<ShortenedUrl[]>>;
+  setRefreshFlag: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const GeoRuleCard = ({ rule, setGeoRules }: Props) => {
+const GeoRuleCard = ({ rule, setGeoRules, setRefreshFlag }: Props) => {
+  const { SITE_URL } = getSiteConfig();
+  const normalizedSiteUrl = normalizeUrl(SITE_URL);
   const { token } = useAuth();
   const { API_BASE_URL } = getSiteConfig();
   const [isDeleting, setIsDeleting] = useState(false);
   const [open, setOpen] = useState(false);
 
   const copyToClipboard = (shortCode: string) => {
-    navigator.clipboard.writeText(`https://zip.ly/${shortCode}`);
+    navigator.clipboard.writeText(`https://${normalizedSiteUrl}/${shortCode}`);
     toast.success("Geo-redirect link copied to clipboard");
   };
   const handleDelete = async (id: string) => {
@@ -41,6 +44,7 @@ const GeoRuleCard = ({ rule, setGeoRules }: Props) => {
           prev.filter((item) => item._id !== id)
         );
         toast.success("URL deleted successfully");
+        setRefreshFlag((prev) => prev + 1);
         setOpen(false);
       } else {
         throw new Error(data.message || "Error deleting url");
@@ -68,7 +72,7 @@ const GeoRuleCard = ({ rule, setGeoRules }: Props) => {
               <div className="flex items-center gap-2">
                 <Globe className="h-4 w-4 text-primary" />
                 <span className="font-mono text-lg text-primary">
-                  zip.ly/{rule.shortCode}
+                  {normalizedSiteUrl}/{rule.shortCode}
                 </span>
               </div>
 
@@ -114,11 +118,16 @@ const GeoRuleCard = ({ rule, setGeoRules }: Props) => {
                     geoRule={geoRule}
                     id={rule._id}
                     setGeoRules={setGeoRules}
+                    setRefreshFlag={setRefreshFlag}
                   />
                 ))}
               </div>
 
-              <NewCountryRuleDialog id={rule._id} setGeoRules={setGeoRules}>
+              <NewCountryRuleDialog
+                id={rule._id}
+                setGeoRules={setGeoRules}
+                setRefreshFlag={setRefreshFlag}
+              >
                 <span>Add Country Rule</span>
               </NewCountryRuleDialog>
             </div>
@@ -130,7 +139,11 @@ const GeoRuleCard = ({ rule, setGeoRules }: Props) => {
                 <Globe className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
                 No geographic rules configured
               </p>
-              <NewCountryRuleDialog id={rule._id} setGeoRules={setGeoRules}>
+              <NewCountryRuleDialog
+                id={rule._id}
+                setGeoRules={setGeoRules}
+                setRefreshFlag={setRefreshFlag}
+              >
                 <span>Add First Rule</span>
               </NewCountryRuleDialog>
             </div>

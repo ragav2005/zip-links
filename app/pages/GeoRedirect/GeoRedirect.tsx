@@ -10,10 +10,17 @@ import { getSiteConfig } from "~/lib/utils";
 import { GeoRuleCardSkeleton } from "./components/GeoRuleCardSkeleton";
 import { toast } from "sonner";
 
+interface Stats {
+  totalGeoClicks: string;
+  totalGeoRules: string;
+  countriesTargeted: string[];
+}
+
 const GeoRedirect = () => {
   const { token } = useAuth();
   const { API_BASE_URL } = getSiteConfig();
-
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [refreshFlag, setRefreshFlag] = useState(0);
   const [geoRules, setGeoRules] = useState<ShortenedUrl[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -41,9 +48,36 @@ const GeoRedirect = () => {
     }
   }, []);
 
+  const getStats = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/dashboard/geo-stats`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+
+      if (response.ok && data) {
+        setStats(data.data);
+      } else {
+        throw new Error(data.message || "Failed to fetch stats.");
+      }
+    } catch (error: Error | any) {
+      toast.error(error.message || "Failed to load stats.");
+      console.error("Error fetching stats:", error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchGeoUrls();
+    getStats();
   }, [fetchGeoUrls]);
+
+  useEffect(() => {
+    getStats();
+  }, [refreshFlag]);
 
   return (
     <div className="min-h-screen bg-gradient-bg">
@@ -71,7 +105,7 @@ const GeoRedirect = () => {
                     <Globe className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="text-2xl font-bold text-foreground">
-                    {geoRules.length}
+                    {stats?.totalGeoRules ?? 0}
                   </h3>
                   <p className="text-sm text-muted-foreground">Geo-Rules</p>
                 </CardContent>
@@ -82,9 +116,11 @@ const GeoRedirect = () => {
                   <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
                     <MapPin className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground">12</h3>
+                  <h3 className="text-2xl font-bold text-foreground">
+                    {stats?.countriesTargeted.length ?? 0}
+                  </h3>
                   <p className="text-sm text-muted-foreground">
-                    Countries Targeted {/* todo */}
+                    Countries Targeted
                   </p>
                 </CardContent>
               </Card>
@@ -94,9 +130,11 @@ const GeoRedirect = () => {
                   <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
                     <BarChart3 className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground">8.9K</h3>
+                  <h3 className="text-2xl font-bold text-foreground">
+                    {stats?.totalGeoClicks ?? 0}
+                  </h3>
                   <p className="text-sm text-muted-foreground">
-                    Total Geo-Clicks {/* todo */}
+                    Total Geo-Clicks
                   </p>
                 </CardContent>
               </Card>
@@ -113,7 +151,10 @@ const GeoRedirect = () => {
                     Manage your location-based Redirects
                   </p>
                 </div>
-                <NewGeoRuleDialog setGeoRules={setGeoRules} />
+                <NewGeoRuleDialog
+                  setGeoRules={setGeoRules}
+                  setRefreshFlag={setRefreshFlag}
+                />
               </div>
 
               <div className="space-y-6">
@@ -133,7 +174,10 @@ const GeoRedirect = () => {
                         Create your first geo-redirect rule to start directing
                         users to different destinations based on their location.
                       </p>
-                      <NewGeoRuleDialog setGeoRules={setGeoRules} />
+                      <NewGeoRuleDialog
+                        setGeoRules={setGeoRules}
+                        setRefreshFlag={setRefreshFlag}
+                      />
                     </CardContent>
                   </Card>
                 ) : (
@@ -142,6 +186,7 @@ const GeoRedirect = () => {
                       key={rule._id}
                       rule={rule}
                       setGeoRules={setGeoRules}
+                      setRefreshFlag={setRefreshFlag}
                     />
                   ))
                 )}

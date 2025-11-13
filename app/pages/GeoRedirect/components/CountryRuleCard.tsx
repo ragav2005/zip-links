@@ -18,9 +18,15 @@ interface Props {
   geoRule: geoRule;
   id: string;
   setGeoRules: React.Dispatch<React.SetStateAction<ShortenedUrl[]>>;
+  setRefreshFlag: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const CountryRuleCard = ({ geoRule, id, setGeoRules }: Props) => {
+const CountryRuleCard = ({
+  geoRule,
+  id,
+  setGeoRules,
+  setRefreshFlag,
+}: Props) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const { API_BASE_URL } = getSiteConfig();
   const { token } = useAuth();
@@ -45,6 +51,7 @@ const CountryRuleCard = ({ geoRule, id, setGeoRules }: Props) => {
             rule._id === id ? { ...rule, geoRules: data.data } : rule
           )
         );
+        setRefreshFlag((prev) => prev + 1);
         toast.success("Country rule deleted successfully");
         false;
       } else {

@@ -26,24 +26,24 @@ export const Navigation = () => {
 
           {/* desktop */}
           <div className="hidden md:flex items-center gap-8">
-            <a
-              href="/dashboard"
+            <Link
+              to="/dashboard"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
               Dashboard
-            </a>
-            <a
-              href="/shorten"
+            </Link>
+            <Link
+              to="/shorten"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
               Shorten
-            </a>
-            <a
-              href="/geo-redirect"
+            </Link>
+            <Link
+              to="/geo-redirect"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
               Geo-Redirect
-            </a>
+            </Link>
             {user?.id ? (
               <Profile isMobile={false} />
             ) : (
@@ -73,24 +73,24 @@ export const Navigation = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-white/10">
             <div className="flex flex-col items-center gap-4">
-              <a
-                href="/dashboard"
+              <Link
+                to="/dashboard"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Dashboard
-              </a>
-              <a
-                href="/shorten"
+              </Link>
+              <Link
+                to="/shorten"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Shorten
-              </a>
-              <a
-                href="/geo-redirect"
+              </Link>
+              <Link
+                to="/geo-redirect"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Geo-Redirect
-              </a>
+              </Link>
               <div className="pt-2">
                 {user?.id ? (
                   <Profile isMobile={true} />

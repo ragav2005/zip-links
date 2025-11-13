@@ -1,4 +1,5 @@
 import Shorten from "~/pages/shorten/Shorten";
+import ProtectedRoute from "~/components/ProtectedRoute";
 import type { Route } from "../+types/root";
 
 export function meta({}: Route.MetaArgs) {
@@ -9,7 +10,11 @@ export function meta({}: Route.MetaArgs) {
 }
 
 const shorten = () => {
-  return <Shorten />;
+  return (
+    <ProtectedRoute>
+      <Shorten />
+    </ProtectedRoute>
+  );
 };
 
 export default shorten;

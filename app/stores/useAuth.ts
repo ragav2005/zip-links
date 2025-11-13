@@ -13,6 +13,7 @@ interface AuthState {
   updateUser: (updates: Partial<User>) => void;
   logOut: () => void;
   isLoading: boolean;
+  isVerifying: boolean;
   error: string | null;
 }
 const { API_BASE_URL } = getSiteConfig();
@@ -23,6 +24,7 @@ export const useAuth = create<AuthState>()(
     token:
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null,
     isLoading: false,
+    isVerifying: false,
     error: null,
 
     signIn: async (email: string, password: string): Promise<boolean> => {
@@ -37,7 +39,6 @@ export const useAuth = create<AuthState>()(
         });
 
         const data = await response.json();
-        console.log(data);
         if (!response.ok) throw new Error(data.error || "Failed to sign in");
 
         const { token, user: rawUser } = data.data;
@@ -125,7 +126,7 @@ export const useAuth = create<AuthState>()(
     },
 
     verifyToken: async (token: string): Promise<boolean> => {
-      set({ isLoading: true, error: null });
+      set({ isVerifying: true, error: null });
 
       try {
         const response = await fetch(`${API_BASE_URL}/api/user/verify-token`, {
@@ -137,6 +138,7 @@ export const useAuth = create<AuthState>()(
         });
 
         const data = await response.json();
+
         if (response.ok && data.success) {
           const rawUser = data.data;
 
@@ -152,7 +154,7 @@ export const useAuth = create<AuthState>()(
           set({
             user,
             token,
-            isLoading: false,
+            isVerifying: false,
             error: null,
           });
 
@@ -166,7 +168,7 @@ export const useAuth = create<AuthState>()(
           set({
             user: null,
             token: null,
-            isLoading: false,
+            isVerifying: false,
             error: "Session expired. Please sign in again.",
           });
           localStorage.removeItem("authToken");
@@ -180,7 +182,7 @@ export const useAuth = create<AuthState>()(
         set({
           user: null,
           token: null,
-          isLoading: false,
+          isVerifying: false,
           error: err.message,
         });
         localStorage.removeItem("authToken");
