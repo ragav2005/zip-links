@@ -140,7 +140,7 @@ const Shorten = () => {
                     Leave empty for auto-generated alias
                   </p>
                   <div className="flex items-center">
-                    <span className="text-muted-foreground mr-2">
+                    <span className="text-muted-foreground mr-2 shrink-0">
                       {normalizedSiteUrl}/
                     </span>
                     <Input
@@ -153,7 +153,7 @@ const Shorten = () => {
                             .replace(/[^a-z0-9-]/g, "")
                         )
                       }
-                      className="h-12 bg-white/10 border-white/20 text-foreground placeholder:text-muted-foreground rounded-xl "
+                      className="h-12 bg-white/10 border-white/20 text-foreground placeholder:text-muted-foreground rounded-xl flex-1"
                     />
                   </div>
                 </div>

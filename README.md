@@ -15,6 +15,7 @@ A modern, full-stack URL shortener application built with React 19, TypeScript, 
 ## Tech Stack
 
 ### Frontend
+
 - **React 19** - Modern React with concurrent features
 - **TypeScript** - Type-safe development
 - **React Router 7** - Client-side routing and data loading
@@ -25,6 +26,7 @@ A modern, full-stack URL shortener application built with React 19, TypeScript, 
 - **Sonner** - Toast notifications
 
 ### Build Tools
+
 - **Vite** - Fast build tool and development server
 - **ESLint** - Code linting
 - **TypeScript** - Type checking
@@ -39,25 +41,29 @@ A modern, full-stack URL shortener application built with React 19, TypeScript, 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd ziplinks
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Create environment file:
+
 ```bash
 cp .env.example .env
 ```
 
 4. Configure environment variables in `.env`:
+
 ```env
-VITE_NODE_URI=http://localhost:5500
-VITE_SITE_URL=http://localhost:5173
+VITE_NODE_URI=http://backend.url
+VITE_SITE_URL=http://site.url
 ```
 
 ## Development
@@ -79,9 +85,9 @@ The application will be available at `http://localhost:5173`.
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `VITE_NODE_URI` | Backend API base URL | `http://localhost:5500` |
+| Variable        | Description              | Default                 |
+| --------------- | ------------------------ | ----------------------- |
+| `VITE_NODE_URI` | Backend API base URL     | `http://localhost:5500` |
 | `VITE_SITE_URL` | Frontend application URL | `http://localhost:5173` |
 
 ## Project Structure
@@ -133,11 +139,13 @@ docker run -p 3000:3000 ziplinks
 ### Manual Deployment
 
 1. Build the application:
+
 ```bash
 npm run build
 ```
 
 2. Start the production server:
+
 ```bash
 npm run start
 ```
@@ -177,14 +185,3 @@ All API calls include proper error handling and loading states.
 - Optimized bundle sizes
 - Efficient state management
 - Responsive images and assets
-
-## Browser Support
-
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-
-## License
-
-This project is private and proprietary.
