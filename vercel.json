@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/((?!api|shorten|geo-redirect|dashboard|login|register|src|assets|@vite|vite|auth|node_modules|app|@id|favicon.ico|__).+)",
-      "destination": "$BACKEND_API_URL/api/$1"
+      "destination": "https://zip-link-api.kindmeadow-78ddf0d4.centralindia.azurecontainerapps.io/api/$1"
     }
   ]
 }
