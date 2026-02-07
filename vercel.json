@@ -2,10 +2,7 @@
   "rewrites": [
     {
       "source": "/((?!api|shorten|geo-redirect|dashboard|login|register|src|assets|@vite|vite|auth|node_modules|app|@id|favicon.ico|__).+)",
-      "destination": "/api/$1"
+      "destination": "https://zip-links-api.lemonground-24ed832e.centralindia.azurecontainerapps.io/api/$1"
     }
-  ],
-  "env": {
-    "BACKEND_API_URL": "@backend_api_url"
-  }
+  ]
 }
