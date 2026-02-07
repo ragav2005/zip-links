@@ -13,8 +13,9 @@ export default defineConfig({
   server: {
     proxy: {
       [`^/((?!${APP_ROUTES}).+)$`]: {
-        target: `${API_BASE_URL}/api`,
+        target: API_BASE_URL,
         changeOrigin: true,
+        rewrite: (path) => `/api${path}`,
       },
     },
   },

@@ -1,8 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "/((?!shorten|geo-redirect|dashboard|login|register|src|assets|@vite|vite|auth|node_modules|app|@id|favicon.ico|__).+)",
-      "destination": "$BACKEND_API_URL/api/$1"
+      "source": "/((?!api|shorten|geo-redirect|dashboard|login|register|src|assets|@vite|vite|auth|node_modules|app|@id|favicon.ico|__).+)",
+      "destination": "/api/$1"
     }
-  ]
+  ],
+  "env": {
+    "BACKEND_API_URL": "@backend_api_url"
+  }
 }
